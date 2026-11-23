@@ -61,7 +61,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 .ar{font-family:var(--f-ar);font-size:30px;line-height:1.45;direction:rtl;display:block}
 .tr{display:block;font-size:13px;color:var(--muted);direction:ltr;text-align:right}
 .tabs{display:flex;gap:4px;padding:4px;background:var(--tint);border-radius:12px;margin-bottom:16px;flex-wrap:wrap}
-.tabs button{flex:1;min-width:74px;font:inherit;font-weight:600;font-size:14px;min-height:40px;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button{flex:1;min-width:68px;font:inherit;font-weight:600;font-size:14px;min-height:40px;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}
 .tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
 .chip{font:inherit;font-size:14px;font-weight:600;min-height:38px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
@@ -97,6 +97,8 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 .fr.fin{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent);background:var(--tint)}
 .fr input.num{text-align:center;font-family:var(--f-head);font-size:24px;font-weight:700;min-height:56px;font-variant-numeric:tabular-nums}
 .fr label{text-align:right;min-width:0;cursor:pointer}
+.chk-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;cursor:pointer;background:var(--bg)}
+.chk-pill input{width:auto;min-height:auto;margin:0}
 @media (prefers-reduced-motion:no-preference){.meter>i{transition:width .3s ease}}
 </style>
 </head>
@@ -108,7 +110,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
   "start": "2026-11-23",
   "end": "2026-12-11",
   "parentUrl": "",
-  "adminPinH": "022f3c42a3fc78a7f0e6b6b0f80482e467c46936a4be92d8f091aaee92587092",
+  "adminPinH": "DEFAULT_1234",
   "teachers": [],
   "activities": [
     {"id":"a1","ar":"يا محمد","tr":"Ya Muhammad","t":0},
@@ -280,7 +282,6 @@ function findTeacher(key,st){
   for(var i=0;i<list.length;i++){if(list[i].h===key)return list[i]}
   return null;
 }
-function allHashes(st){var o=[];st.classes.forEach(function(c){c.students.forEach(function(s){o.push(s.h)})});return o}
 function visibleClasses(st){
   if(ui.role==='teacher' && ui.teacherClassIds && ui.teacherClassIds.length){
     var filtered = st.classes.filter(function(c){return ui.teacherClassIds.indexOf(c.id)>-1});
@@ -335,7 +336,7 @@ function makeVercelDb(){
             }, function(e){ if(!dead && error) error(e); });
           }
           poll();
-          timer = setInterval(poll, 8000);
+          timer = setInterval(poll, 10000);
           return function(){ dead = true; clearInterval(timer); };
         }
       };
@@ -360,7 +361,7 @@ function makeVercelDb(){
             }, function(e){ if(!dead && error) error(e); });
           }
           poll();
-          timer = setInterval(poll, 10000);
+          timer = setInterval(poll, 12000);
           return function(){ dead = true; clearInterval(timer); };
         }
       };
@@ -640,6 +641,7 @@ function vStaff(){
   var tabBar = '<div class="tabs" role="tablist">'+
     '<button role="tab" aria-selected="'+(ui.tab==='class')+'" data-act="tab" data-t="class">Progress</button>'+
     (isAdmin ? '<button role="tab" aria-selected="'+(ui.tab==='roster')+'" data-act="tab" data-t="roster">Students</button>' : '')+
+    (isAdmin ? '<button role="tab" aria-selected="'+(ui.tab==='teachers')+'" data-act="tab" data-t="teachers">Teachers</button>' : '')+
     (isAdmin ? '<button role="tab" aria-selected="'+(ui.tab==='acts')+'" data-act="tab" data-t="acts">Recitations</button>' : '')+
     (isAdmin ? '<button role="tab" aria-selected="'+(ui.tab==='settings')+'" data-act="tab" data-t="settings">Settings</button>' : '')+
   '</div>';
@@ -647,6 +649,7 @@ function vStaff(){
   var body = '';
   if(ui.tab === 'class') body = vTabClass(cls, clsList);
   else if(ui.tab === 'roster' && isAdmin) body = vTabRoster();
+  else if(ui.tab === 'teachers' && isAdmin) body = vTabTeachers();
   else if(ui.tab === 'acts' && isAdmin) body = vTabActs();
   else if(ui.tab === 'settings' && isAdmin) body = vTabSettings();
   else body = vTabClass(cls, clsList);
@@ -700,7 +703,8 @@ function vTabClass(cls, clsList){
 
   return chips +
     '<div class="row between" style="margin-bottom:12px"><h2>'+esc(cls.name)+' ('+cls.students.length+')</h2>'+
-    '<button class="btn ghost sm" data-act="csv">Export CSV</button></div>'+
+    '<div class="row"><button class="btn ghost sm" data-act="csv">Export Detailed CSV</button></div></div>'+
+    '<p class="note" style="margin-bottom:12px">CSV includes itemized counts for every recitation across all days plus daily and grand totals.</p>'+
     '<div class="stack">'+(rows || '<p class="note">No students in this class yet.</p>')+'</div>';
 }
 
@@ -728,6 +732,40 @@ function vTabRoster(){
   '</div>';
 }
 
+function vTabTeachers(){
+  var classMap = {};
+  draft.classes.forEach(function(c){ classMap[c.id] = c.name; });
+
+  var classCheckboxes = draft.classes.length
+    ? '<div class="gap8"><label class="f">Assign Classes (leave unchecked for all classes)</label><div class="row">'+
+      draft.classes.map(function(c){
+        return '<label class="chk-pill"><input type="checkbox" class="tch-cls-chk" value="'+esc(c.id)+'"> '+esc(c.name)+'</label>';
+      }).join('')+'</div></div>'
+    : '';
+
+  var tList = (draft.teachers||[]).map(function(t, idx){
+    var assigned = (t.classIds && t.classIds.length)
+      ? t.classIds.map(function(id){ return classMap[id] || id; }).join(', ')
+      : 'All classes';
+    return '<div class="row between card" style="padding:12px 14px">'+
+      '<div><strong>'+esc(t.name)+'</strong><span class="note" style="display:block">Classes: '+esc(assigned)+'</span></div>'+
+      '<button class="btn danger sm" data-act="del-tch" data-i="'+idx+'">Remove</button></div>';
+  }).join('');
+
+  return '<div class="stack">'+
+    '<div class="card stack"><h3>Add Teacher (ITS Access)</h3>'+
+      '<p class="note">Teachers sign in using their 8-digit ITS number to monitor class progress and export CSV reports.</p>'+
+      '<div class="row"><input style="width:150px" inputmode="numeric" maxlength="12" id="t-add-its" placeholder="Teacher ITS" value="'+esc(ui.newTeacherIts)+'">'+
+      '<input class="grow" id="t-add-name" placeholder="Teacher Full Name" value="'+esc(ui.newTeacherName)+'"></div>'+
+      classCheckboxes +
+      '<div><button class="btn sm" data-act="add-tch">+ Add Teacher to Draft</button></div>'+
+    '</div>'+
+    '<div class="stack"><h3>Authorized Teachers ('+(draft.teachers||[]).length+')</h3>'+
+      (tList || '<div class="card"><p class="note">No teachers added yet.</p></div>')+
+    '</div>'+
+  '</div>';
+}
+
 function vTabActs(){
   var items = draft.activities.map(function(a, idx){
     return '<div class="edit">'+
@@ -747,24 +785,12 @@ function vTabActs(){
 }
 
 function vTabSettings(){
-  var tList = (draft.teachers||[]).map(function(t, idx){
-    return '<div class="row between card" style="padding:10px 14px">'+
-      '<span>'+esc(t.name)+'</span>'+
-      '<button class="btn danger sm" data-act="del-tch" data-i="'+idx+'">Remove</button></div>';
-  }).join('');
-
   return '<div class="stack">'+
     '<div class="card stack"><h3>Recitation Schedule</h3>'+
       '<div class="row"><div class="grow"><label class="f">Start Date</label><input type="date" data-cfg="start" value="'+esc(draft.start)+'"></div>'+
       '<div class="grow"><label class="f">End Date</label><input type="date" data-cfg="end" value="'+esc(draft.end)+'"></div></div>'+
       '<div><label class="f">Parent Portal URL (for Calendar Reminders)</label>'+
       '<input type="url" data-cfg="parentUrl" placeholder="https://your-app.vercel.app" value="'+esc(draft.parentUrl||'')+'"></div>'+
-    '</div>'+
-    '<div class="card stack"><h3>Teachers (ITS Access)</h3>'+
-      '<div class="row"><input style="width:140px" inputmode="numeric" id="t-add-its" placeholder="Teacher ITS" value="'+esc(ui.newTeacherIts)+'">'+
-      '<input class="grow" id="t-add-name" placeholder="Teacher Name" value="'+esc(ui.newTeacherName)+'">'+
-      '<button class="btn sm" data-act="add-tch">Add</button></div>'+
-      tList +
     '</div>'+
     '<div class="card stack"><h3>Change Admin Passcode</h3>'+
       '<div class="row"><input type="password" id="new-pin" placeholder="New passcode (min 4 chars)" value="'+esc(ui.newPin)+'" class="grow">'+
@@ -773,27 +799,84 @@ function vTabSettings(){
   '</div>';
 }
 
+function csvCell(val){
+  var s = String(val == null ? '' : val);
+  if(/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
 function exportCsv(){
   var cls = curClass(S);
   if(!cls) return;
   var ds = daysOf(S), acts = S.activities;
-  var header = ['Student Name'].concat(ds.map(function(d){return d.iso})).concat(['Total Recited']);
-  var lines = [header.join(',')];
-  cls.students.forEach(function(s){
-    var p = remote[s.h] || {}, tot = 0;
-    var row = ['"'+nameOf(s.h).replace(/"/g,'""')+'"'];
-    ds.forEach(function(d){
-      var sum = sumDay(p, d.iso, acts);
-      tot += sum;
-      row.push(sum);
-    });
-    row.push(tot);
-    lines.push(row.join(','));
+
+  // Header includes:
+  // 1. Class & Student Name
+  // 2. Summary metrics (Days Completed, Total Days, Grand Total Recited)
+  // 3. Per-Recitation Cumulative Totals (bifurcated by each tasbih/dua across the whole period)
+  // 4. Day-by-Day Bifurcation (each Day's Total + each Day's individual Recitation count)
+  var header = ['Class', 'Student Name', 'Days Completed', 'Total Days', 'Grand Total Recited'];
+
+  // Cumulative total column per recitation
+  acts.forEach(function(a){
+    var label = (a.tr || a.ar || a.id).trim();
+    header.push('Total - ' + label);
   });
-  var blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+
+  // Daily total + daily bifurcated input columns per date
+  ds.forEach(function(d){
+    var dLabel = d.iso + ' (' + d.d + ' ' + d.m + ')';
+    header.push(dLabel + ' - Day Total');
+    acts.forEach(function(a){
+      var aLabel = (a.tr || a.ar || a.id).trim();
+      header.push(dLabel + ' - ' + aLabel);
+    });
+  });
+
+  var lines = [header.map(csvCell).join(',')];
+
+  cls.students.forEach(function(s){
+    var p = remote[s.h] || {};
+    var daysDone = 0;
+    var grandTotal = 0;
+    var actTotals = {};
+    acts.forEach(function(a){ actTotals[a.id] = 0; });
+
+    var dailyCells = [];
+    ds.forEach(function(d){
+      var cDone = cnt(p, d.iso, acts);
+      if(acts.length && cDone === acts.length) daysDone++;
+      var dSum = 0;
+      var subCells = [];
+      acts.forEach(function(a){
+        var val = gc(p, d.iso, a.id);
+        dSum += val;
+        actTotals[a.id] += val;
+        subCells.push(val);
+      });
+      grandTotal += dSum;
+      dailyCells.push(dSum);
+      subCells.forEach(function(v){ dailyCells.push(v); });
+    });
+
+    var row = [
+      cls.name,
+      nameOf(s.h),
+      daysDone,
+      ds.length,
+      grandTotal
+    ];
+    acts.forEach(function(a){ row.push(actTotals[a.id]); });
+    dailyCells.forEach(function(v){ row.push(v); });
+
+    lines.push(row.map(csvCell).join(','));
+  });
+
+  // Prepend UTF-8 BOM (\uFEFF) so Excel opens Arabic characters cleanly
+  var blob = new Blob(['\uFEFF' + lines.join('\r\n')], {type:'text/csv;charset=utf-8;'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = cls.name.replace(/\s+/g,'_') + '_Tabbudaat.csv';
+  a.download = cls.name.replace(/\s+/g,'_') + '_Tabbudaat_Detailed.csv';
   a.click();
 }
 
@@ -854,7 +937,7 @@ app.addEventListener('submit', function(e){
     var rawT = cleanIts(document.getElementById('t-its').value);
     ui.itsVal = rawT; ui.err = '';
     var kT = idOf(derive(rawT)), tHit = findTeacher(kT);
-    if(!tHit){ ui.err = 'Teacher ITS not recognized.'; render(); return; }
+    if(!tHit){ ui.err = 'Teacher ITS not recognized. Ask the School Admin to add your ITS.'; render(); return; }
     ui.role = 'teacher'; ui.teacherName = tHit.name; ui.teacherClassIds = tHit.classIds || [];
     try{ sessionStorage.setItem(SESSION_KEY, JSON.stringify({role:'teacher', name:tHit.name, classIds:ui.teacherClassIds})); }catch(x){}
     ensureSubs();
@@ -864,7 +947,7 @@ app.addEventListener('submit', function(e){
   if(f === 'staff-admin'){
     var p = document.getElementById('a-pin').value;
     ui.adminPassVal = p; ui.err = '';
-   var valid = (S.adminPinH && S.adminPinH !== DEFAULT_PIN_H)
+    var valid = (S.adminPinH && S.adminPinH !== DEFAULT_PIN_H)
       ? (pinHash(p) === S.adminPinH)
       : (p === '1234');
     if(!valid){
@@ -928,7 +1011,7 @@ app.addEventListener('click', function(e){
     ui.classId = cid; ui.newClassName = ''; ui.dirty = true;
     render();
   }
- else if(act === 'import-stu'){
+  else if(act === 'import-stu'){
     var cls = curClass(draft) || draft.classes[0];
     var raw = document.getElementById('bulk-stu').value || '';
     if(!cls || !raw.trim()) return;
@@ -936,7 +1019,6 @@ app.addEventListener('click', function(e){
     raw.split(/\r?\n/).forEach(function(line){
       line = line.trim();
       if(!line) return;
-      // Supports: "30412345, Fatema Ali" OR "30412345 - Fatema Ali" OR "30412345 Fatema Ali"
       var m = line.match(/^([0-9٠-٩۰-۹\s\-]{6,15})[\s,|\t\-]+(.+)$/);
       if(!m) return;
       var its = cleanIts(m[1]), sname = m[2].trim();
@@ -978,9 +1060,19 @@ app.addEventListener('click', function(e){
   else if(act === 'add-tch'){
     var tIts = cleanIts(document.getElementById('t-add-its').value);
     var tNm = (document.getElementById('t-add-name').value || '').trim();
-    if(tIts.length < 6 || !tNm){ ui.err = 'Enter both Teacher ITS and Name.'; render(); return; }
-    draft.teachers.push({h: idOf(derive(tIts)), name: tNm, classIds: []});
+    if(tIts.length < 6 || !tNm){ ui.err = 'Enter both a valid Teacher ITS and Teacher Name.'; render(); return; }
+    var assignedIds = [];
+    document.querySelectorAll('.tch-cls-chk:checked').forEach(function(cb){ assignedIds.push(cb.value); });
+    var th = idOf(derive(tIts));
+    var existingT = (draft.teachers||[]).filter(function(t){ return t.h === th; })[0];
+    if(existingT){
+      existingT.name = tNm;
+      existingT.classIds = assignedIds;
+    } else {
+      draft.teachers.push({h: th, name: tNm, classIds: assignedIds});
+    }
     ui.newTeacherIts = ''; ui.newTeacherName = ''; ui.dirty = true;
+    ui.msg = 'Teacher added to draft. Click "Publish Changes" at the bottom to save!';
     render();
   }
   else if(act === 'del-tch'){
