@@ -928,23 +928,37 @@ app.addEventListener('click', function(e){
     ui.classId = cid; ui.newClassName = ''; ui.dirty = true;
     render();
   }
-  else if(act === 'import-stu'){
+ else if(act === 'import-stu'){
     var cls = curClass(draft) || draft.classes[0];
     var raw = document.getElementById('bulk-stu').value || '';
     if(!cls || !raw.trim()) return;
-    var added = 0;
+    var added = 0, updated = 0;
     raw.split(/\r?\n/).forEach(function(line){
-      var parts = line.split(/[,|\t]+/);
-      if(parts.length < 2) return;
-      var its = cleanIts(parts[0]), sname = parts.slice(1).join(' ').trim();
+      line = line.trim();
+      if(!line) return;
+      // Supports: "30412345, Fatema Ali" OR "30412345 - Fatema Ali" OR "30412345 Fatema Ali"
+      var m = line.match(/^([0-9٠-٩۰-۹\s\-]{6,15})[\s,|\t\-]+(.+)$/);
+      if(!m) return;
+      var its = cleanIts(m[1]), sname = m[2].trim();
       if(its.length < 6 || !sname) return;
       var d = derive(its), h = idOf(d), encName = seal(d, sname);
       newNames[h] = sname;
-      var exists = cls.students.some(function(st){ return st.h === h; });
-      if(!exists){ cls.students.push({h: h, e: encName}); added++; }
+      var existing = cls.students.filter(function(st){ return st.h === h; })[0];
+      if(existing){
+        existing.e = encName;
+        updated++;
+      } else {
+        cls.students.push({h: h, e: encName});
+        added++;
+      }
     });
+    if(!added && !updated){
+      ui.err = 'No valid lines found. Format: 30412345, Student Name';
+      render();
+      return;
+    }
     ui.draftText = ''; ui.dirty = true;
-    ui.msg = 'Added ' + added + ' student(s) to draft. Click Publish Changes to save.';
+    ui.msg = 'Added ' + added + (updated ? ' (updated ' + updated + ')' : '') + ' student(s). Click "Publish Changes" below to save to database!';
     render();
   }
   else if(act === 'del-stu'){
