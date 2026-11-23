@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tabbudaat Amaal</title>
+<link id="app-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style id="app-css">
+:root{
+  --bg:#F2F6F4;--surface:#FFFFFF;--ink:#10201D;--muted:#58706B;--line:#D3DFDA;
+  --accent:#0E5A52;--accent-ink:#FFFFFF;--tint:#E3EFEB;
+  --gold:#B1801F;--gold-tint:#F6EBCF;--danger:#A63A2B;
+  --f-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-head:'Space Grotesk','Inter',system-ui,sans-serif;
+  --f-ar:'Amiri','Noto Naskh Arabic','Traditional Arabic',serif;
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1514;--surface:#122321;--ink:#E5EEEB;--muted:#93ABA5;--line:#223C37;
+    --accent:#4DBFAE;--accent-ink:#06211D;--tint:#183530;
+    --gold:#DDB45E;--gold-tint:#3A2F14;--danger:#F08B7B;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1514;--surface:#122321;--ink:#E5EEEB;--muted:#93ABA5;--line:#223C37;
+  --accent:#4DBFAE;--accent-ink:#06211D;--tint:#183530;
+  --gold:#DDB45E;--gold-tint:#3A2F14;--danger:#F08B7B;color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:680px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.brand{font-family:var(--f-head);font-weight:700;font-size:18px;letter-spacing:.01em}
+.brand small{display:block;font-family:var(--f-body);font-weight:500;font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+h1{font-family:var(--f-head);font-size:28px;line-height:1.15;margin:0 0 8px;text-wrap:balance}
+h2{font-family:var(--f-head);font-size:20px;line-height:1.2;margin:0}
+h3{font-family:var(--f-head);font-size:16px;margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 20px;max-width:46ch}
+.note{font-size:14px;color:var(--muted);margin:0}
+.err{color:var(--danger);font-size:14px;margin:0;font-weight:500}
+.ok{color:var(--accent);font-size:14px;margin:0;font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.gap8{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+label.f{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;letter-spacing:.08em;text-transform:uppercase}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;width:100%;min-height:48px}
+textarea{min-height:110px;resize:vertical}
+input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.its{font-family:var(--f-head);font-size:24px;letter-spacing:.18em;font-variant-numeric:tabular-nums}
+.btn{font:inherit;font-weight:600;border:1px solid transparent;border-radius:10px;min-height:48px;padding:0 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.danger{background:transparent;color:var(--danger);border-color:var(--danger)}
+.btn.sm{min-height:38px;padding:0 12px;font-size:14px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.meter{height:8px;border-radius:99px;background:var(--tint);overflow:hidden}
+.meter>i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.ar{font-family:var(--f-ar);font-size:30px;line-height:1.45;direction:rtl;display:block}
+.tr{display:block;font-size:13px;color:var(--muted);direction:ltr;text-align:right}
+.tabs{display:flex;gap:4px;padding:4px;background:var(--tint);border-radius:12px;margin-bottom:16px;flex-wrap:wrap}
+.tabs button{flex:1;min-width:74px;font:inherit;font-weight:600;font-size:14px;min-height:40px;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.chip{font:inherit;font-size:14px;font-weight:600;min-height:38px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.edit{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.edit input.ar{font-size:26px;text-align:right}
+.mini{display:flex;flex-wrap:wrap;gap:3px;margin-top:10px}
+.mini i{width:14px;height:14px;border-radius:3px;background:var(--tint);border:1px solid var(--line)}
+.mini i.part{background:var(--gold-tint);border-color:var(--gold)}
+.mini i.done{background:var(--accent);border-color:var(--accent)}
+.badge{font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid var(--danger);color:var(--danger)}
+.badge.good{border-color:var(--accent);color:var(--accent)}
+.savebar{position:sticky;bottom:max(12px,env(safe-area-inset-bottom,0px));margin-top:16px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--surface);border:2px solid var(--gold);border-radius:var(--r);padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,.15);z-index:10}
+.banner{margin:0 0 16px;padding:12px;border-radius:10px;background:var(--gold-tint);border:1px solid var(--gold);font-size:15px}
+.banner.alert{background:var(--surface);border:2px solid var(--danger)}
+.banner strong{display:block;margin-bottom:6px}
+.banner .row{margin-top:8px}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}
+.day{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 0 10px;min-height:66px;display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative}
+.day .w{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.day .n{font-family:var(--f-head);font-weight:600;font-size:20px;line-height:1.2;font-variant-numeric:tabular-nums}
+.day .m{font-size:10px;color:var(--muted);min-height:14px}
+.day.part{background:var(--gold-tint);border-color:var(--gold)}
+.day.done{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.day.done .w,.day.done .m{color:inherit;opacity:.85}
+.day.miss{border:2px dashed var(--danger)}
+.day.today::after{content:"";position:absolute;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.day.future{opacity:.6}
+.day[aria-current="true"]{box-shadow:0 0 0 2px var(--ink)}
+.acts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.done-msg{margin:0;padding:10px 12px;border-radius:10px;background:var(--tint);font-weight:600}
+.fr{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px 12px 8px 8px;min-height:84px}
+.fr.fin{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent);background:var(--tint)}
+.fr input.num{text-align:center;font-family:var(--f-head);font-size:24px;font-weight:700;min-height:56px;font-variant-numeric:tabular-nums}
+.fr label{text-align:right;min-width:0;cursor:pointer}
+@media (prefers-reduced-motion:no-preference){.meter>i{transition:width .3s ease}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script type="application/json" id="default-state">{
+  "v": 4,
+  "start": "2026-11-23",
+  "end": "2026-12-11",
+  "parentUrl": "",
+  "adminPinH": "022f3c42a3fc78a7f0e6b6b0f80482e467c46936a4be92d8f091aaee92587092",
+  "teachers": [],
+  "activities": [
+    {"id":"a1","ar":"يا محمد","tr":"Ya Muhammad","t":0},
+    {"id":"a2","ar":"يا علي","tr":"Ya Ali","t":0},
+    {"id":"a3","ar":"يا فاطمة","tr":"Ya Fatema","t":0},
+    {"id":"a4","ar":"يا حسن","tr":"Ya Hasan","t":0},
+    {"id":"a5","ar":"يا حسين","tr":"Ya Husain","t":0},
+    {"id":"a6","ar":"يا طيبة","tr":"Ya Taiba","t":0},
+    {"id":"a7","ar":"يا طاهر","tr":"Ya Tahir","t":0},
+    {"id":"a8","ar":"يا مهدي","tr":"Ya Mahdi","t":0},
+    {"id":"a9","ar":"يا مفضل","tr":"Ya Mufaddal","t":0},
+    {"id":"a10","ar":"يس","tr":"Yaseen","t":0},
+    {"id":"a11","ar":"دعاء كامل","tr":"Full dua","t":0}
+  ],
+  "classes": [
+    {
+      "id": "g5",
+      "name": "Grade 5",
+      "students": [
+        {"h":"8039441c5a54b2a1c00c","e":"UA7p8zF87mTa+l+Ut3PfR0Db+Q4I2fUT"},
+        {"h":"161363e59d51511cee00","e":"msxX2JkFJGIxdvarM5CO58lT"},
+        {"h":"2e62572a1b975fc02868","e":"ZIvw/GXVsKAa+DxviYxhPYgMy7V+D+wLng=="},
+        {"h":"3914bf1a6c508c5329d6","e":"sRKEONgeFOdISk/pP3fFoSpOkk/Sjws="},
+        {"h":"683c27c0534eacba51d5","e":"F4eEHzLZCFBB8vT+CtfmWETW29uwr2k="},
+        {"h":"754fa40b632942849e87","e":"YmpJ8NjJ+SBTiH2THfDKPH4+PaVHAy/pyTE="},
+        {"h":"d2e7098fb238ac89cd8e","e":"MeTKBUSidrfGFJmOkz6wNVVJAnFH5G8pNg=="},
+        {"h":"ba8866357cb72304af3b","e":"+jimKecgcd1YKDjLoSINt0dOPS0A5Tdsv3JrMg=="},
+        {"h":"6369673244cb47eaf6c8","e":"VAPSXWZlm/EAv2QsETiD2EiiiEmGDOqtg7E="},
+        {"h":"baaea89c9db6d01cf750","e":"yU8ZSdxRoR8Mdpio8s07bv0Mt/bd2bu0+w=="},
+        {"h":"05f98d4c246bf34630aa","e":"7T/KitZYQ7VAyOGc5DKELb0GGbkU/g=="},
+        {"h":"47c2cf3fb8418f4ea896","e":"KmKZSNbf7o+4TMglwstxqXMq3vwU"},
+        {"h":"d49e9c4ece4867351b2c","e":"MMoF4CZYbTsRQ8Egj5760yl+c47HAEuXuSE="},
+        {"h":"9b638ef29b736faa01bd","e":"I7KcA7eQ0skNJzUg3EtKyHBFwiyJ8R/xa1So/A=="},
+        {"h":"54450e5584897d879f1d","e":"e30hJJX0qsnShvMam2hwQkkTLStpTfQ5"},
+        {"h":"62b566817eaa8353691d","e":"vwBn/6QKCzNCVSUzLDft2sU3KD2njiA31ts="},
+        {"h":"4c35f2fb69509341973d","e":"SOFMcTAw/TptOff+8jJq1TrFuZELKHQ34IdwTA=="},
+        {"h":"4c87a624f209a61a7d97","e":"KdHaHUSkhh3kptGOD5q3qgCgJDhZPE0="},
+        {"h":"7b1d0065a9784faa443c","e":"vL0gNDAymFCia8fiQDu0zTZ2hUhQPf72"},
+        {"h":"16780c8ad70401d0457f","e":"5kIpVRLultIxsAEyf4zuSU2RrDvM4wI="}
+      ]
+    }
+  ]
+}</script>
+
+<script id="app-js">
+(function(){
+'use strict';
+
+var SESSION_KEY = 'ta:staff_session';
+var LS_KEY = 'ta:key', LS_NAME = 'ta:name';
+var API_BASE = '/api/db';
+
+var defaultState = JSON.parse(document.getElementById('default-state').textContent);
+var DEFAULT_PIN_H = defaultState.adminPinH;
+
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function normState(s){
+  s = clone(s || {});
+  if(!Array.isArray(s.teachers)) s.teachers = [];
+  if(!Array.isArray(s.activities)) s.activities = [];
+  if(!Array.isArray(s.classes)) s.classes = [];
+  if(!s.start) s.start = defaultState.start;
+  if(!s.end) s.end = defaultState.end;
+  if(!s.adminPinH) s.adminPinH = DEFAULT_PIN_H;
+  return s;
+}
+var S = normState(defaultState);
+
+var app = document.getElementById('app');
+var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MONL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var WDL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function viewFromHash(){
+  var h = '';
+  try { h = (location.hash || '').replace('#',''); } catch(e){}
+  return h === 'teacher' ? 'staff' : 'parent';
+}
+
+var ui = {
+  view: viewFromHash(),
+  /* parent */
+  screen:'login', key:'', name:'', sel:'', saved:'', remTime:'20:00',
+  progReady:false, progBusy:false, progSlow:false,
+  /* staff */
+  role:null, loginMode:'teacher', teacherName:'', teacherClassIds:[],
+  adminPassVal:'', tab:'class', classId:'',
+  info:'', msg:'', dirty:false, saving:false, confirm:'', draftText:'', draftOk:'',
+  newPin:'', newClassName:'', newTeacherIts:'', newTeacherName:'',
+  /* shared */
+  itsVal:'', err:''
+};
+
+var draft = clone(S), remote = {}, names = {}, newNames = {}, progress = {};
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+/* ---------- ITS cryptography (private lookups) ---------- */
+var KC=null,H0=null;
+function initC(){
+  if(KC)return;
+  var P=[],n,d,ok;
+  for(n=2;P.length<64;n++){ok=true;for(d=2;d*d<=n;d++){if(n%d===0){ok=false;break}}if(ok)P.push(n)}
+  function fr(x){return Math.floor((x-Math.floor(x))*4294967296)|0}
+  KC=P.map(function(p){return fr(Math.cbrt(p))});
+  H0=P.slice(0,8).map(function(p){return fr(Math.sqrt(p))});
+}
+function rr(x,k){return (x>>>k)|(x<<(32-k))}
+function sha(m){
+  initC();
+  var L=m.length,T=((L+9+63)>>6)<<6,buf=new Uint8Array(T);
+  buf.set(m);buf[L]=128;
+  var dv=new DataView(buf.buffer);
+  dv.setUint32(T-8,Math.floor(L*8/4294967296));dv.setUint32(T-4,(L*8)>>>0);
+  var H=H0.slice(),w=new Array(64),o,i;
+  for(o=0;o<T;o+=64){
+    for(i=0;i<16;i++)w[i]=dv.getUint32(o+i*4)|0;
+    for(i=16;i<64;i++){
+      var a1=w[i-15],a2=w[i-2];
+      w[i]=(w[i-16]+(rr(a1,7)^rr(a1,18)^(a1>>>3))+w[i-7]+(rr(a2,17)^rr(a2,19)^(a2>>>10)))|0;
+    }
+    var a=H[0],b=H[1],c=H[2],dd=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for(i=0;i<64;i++){
+      var t1=(h+(rr(e,6)^rr(e,11)^rr(e,25))+((e&f)^(~e&g))+KC[i]+w[i])|0;
+      var t2=((rr(a,2)^rr(a,13)^rr(a,22))+((a&b)^(a&c)^(b&c)))|0;
+      h=g;g=f;f=e;e=(dd+t1)|0;dd=c;c=b;b=a;a=(t1+t2)|0;
+    }
+    H=[(H[0]+a)|0,(H[1]+b)|0,(H[2]+c)|0,(H[3]+dd)|0,(H[4]+e)|0,(H[5]+f)|0,(H[6]+g)|0,(H[7]+h)|0];
+  }
+  var out=new Uint8Array(32),ov=new DataView(out.buffer);
+  for(i=0;i<8;i++)ov.setUint32(i*4,H[i]>>>0);
+  return out;
+}
+function enc(s){return new TextEncoder().encode(s)}
+function hex(u){var s='';for(var i=0;i<u.length;i++)s+=(u[i]+256).toString(16).slice(1);return s}
+function cat(a,b){var o=new Uint8Array(a.length+b.length);o.set(a);o.set(b,a.length);return o}
+function b64(u){var s='';for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s)}
+function unb64(s){var r=atob(s),u=new Uint8Array(r.length);for(var i=0;i<r.length;i++)u[i]=r.charCodeAt(i);return u}
+function derive(its){var x=sha(enc('tabbudaat-amaal|v2|'+its));for(var i=0;i<10000;i++)x=sha(x);return x}
+function idOf(d){return hex(sha(cat(d,enc('id')))).slice(0,20)}
+function mask(d,len){
+  var k=sha(cat(d,enc('key'))),out=new Uint8Array(len),b,blk;
+  for(b=0;b*32<len;b++){
+    blk=sha(cat(k,new Uint8Array([b>>>24,b>>>16,b>>>8,b])));
+    out.set(blk.subarray(0,Math.min(32,len-b*32)),b*32);
+  }
+  return out;
+}
+function xor(u,m){for(var i=0;i<u.length;i++)u[i]=u[i]^m[i];return u}
+function seal(d,name){var u=enc(name);return b64(xor(u,mask(d,u.length)))}
+function unseal(d,e){try{var u=unb64(e);return new TextDecoder().decode(xor(u,mask(d,u.length)))}catch(x){return ''}}
+function pinHash(p){var x=sha(enc('tabbudaat-amaal|admin|v1|'+p));for(var i=0;i<2000;i++)x=sha(x);return hex(x)}
+
+function cleanIts(v){
+  return String(v||'').replace(/[٠-٩]/g,function(c){return String(c.charCodeAt(0)-1632)}).replace(/[۰-۹]/g,function(c){return String(c.charCodeAt(0)-1776)}).replace(/\D/g,'');
+}
+function findStudent(key,st){
+  st=st||S;
+  for(var i=0;i<st.classes.length;i++){
+    var c=st.classes[i];
+    for(var j=0;j<c.students.length;j++){if(c.students[j].h===key)return {s:c.students[j],c:c}}
+  }
+  return null;
+}
+function findTeacher(key,st){
+  st=st||S;
+  var list=st.teachers||[];
+  for(var i=0;i<list.length;i++){if(list[i].h===key)return list[i]}
+  return null;
+}
+function allHashes(st){var o=[];st.classes.forEach(function(c){c.students.forEach(function(s){o.push(s.h)})});return o}
+function visibleClasses(st){
+  if(ui.role==='teacher' && ui.teacherClassIds && ui.teacherClassIds.length){
+    var filtered = st.classes.filter(function(c){return ui.teacherClassIds.indexOf(c.id)>-1});
+    if(filtered.length) return filtered;
+  }
+  return st.classes;
+}
+function curClass(st){
+  var list = (st===S) ? visibleClasses(st) : st.classes;
+  return list.filter(function(c){return c.id===ui.classId})[0] || list[0];
+}
+function nameOf(h){return newNames[h]||names[h]||'Student'}
+
+/* ---------- Local convenience storage ---------- */
+var mem={};
+function lget(k){try{return localStorage.getItem(k)}catch(e){return mem[k]||null}}
+function lset(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}}
+function ldel(k){try{localStorage.removeItem(k)}catch(e){delete mem[k]}}
+
+/* ---------- Vercel Serverless Database Adapter ---------- */
+function makeVercelDb(){
+  function apiFetch(url, opts){
+    return fetch(url, opts).then(function(r){
+      return r.json().catch(function(){return {}}).then(function(body){
+        if(!r.ok) throw {code: r.status===403?'invalid_argument':'unavailable', message: body.error || ('HTTP '+r.status)};
+        return body;
+      });
+    });
+  }
+  return {
+    doc: function(path){
+      return {
+        set: function(data){
+          return apiFetch(API_BASE, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({path: path, data: data})
+          });
+        },
+        onSnapshot: function(next, error){
+          var dead = false, timer = null;
+          function poll(){
+            if(dead) return;
+            apiFetch(API_BASE + '?path=' + encodeURIComponent(path)).then(function(res){
+              if(dead) return;
+              next({
+                id: path.split('/').pop(),
+                exists: !!res.exists,
+                data: function(){ return res.data; },
+                metadata: {fromCache: false, hasPendingWrites: false}
+              });
+            }, function(e){ if(!dead && error) error(e); });
+          }
+          poll();
+          timer = setInterval(poll, 8000);
+          return function(){ dead = true; clearInterval(timer); };
+        }
+      };
+    },
+    collection: function(prefix){
+      return {
+        onSnapshot: function(next, error){
+          var dead = false, timer = null;
+          function poll(){
+            if(dead) return;
+            apiFetch(API_BASE + '?prefix=' + encodeURIComponent(prefix)).then(function(res){
+              if(dead) return;
+              var docs = (res.docs || []).map(function(d){
+                return {
+                  id: d.id,
+                  exists: true,
+                  data: function(){ return d.data; },
+                  metadata: {fromCache: false, hasPendingWrites: false}
+                };
+              });
+              next({docs: docs, size: docs.length, empty: !docs.length, metadata: {fromCache: false, hasPendingWrites: false}});
+            }, function(e){ if(!dead && error) error(e); });
+          }
+          poll();
+          timer = setInterval(poll, 10000);
+          return function(){ dead = true; clearInterval(timer); };
+        }
+      };
+    }
+  };
+}
+
+var db=null, dbState='connecting', dbErr='', cfgLive=false, cfgTimer=null;
+var unsubCfg=null, unsubRoster=null, unsubProgAll=null, unsubProgOne=null, progOneKey='';
+
+function softRender(){
+  var a=document.activeElement;
+  if(a&&a!==document.body&&a.matches&&a.matches('input,textarea,select')&&app.contains(a))return;
+  render();
+}
+function onDbErr(e){dbErr=(e&&e.code)||'error';softRender()}
+
+function connectDb(){
+  cfgTimer = setTimeout(function(){
+    if(!cfgLive && dbState==='ready'){dbState='slow';softRender()}
+  },10000);
+  db = makeVercelDb();
+  dbState = 'ready';
+  ensureSubs();
+  softRender();
+}
+
+function ensureSubs(){
+  if(!db)return;
+  if(!unsubCfg){
+    unsubCfg=db.doc('system/config').onSnapshot(function(snap){
+      cfgLive=true;clearTimeout(cfgTimer);dbState='ready';dbErr='';
+      if(snap.exists){
+        S=normState(snap.data());
+        if(!ui.dirty)draft=clone(S);
+      }
+      softRender();
+    },onDbErr);
+  }
+  if(ui.role){
+    if(!unsubRoster){
+      unsubRoster=db.doc('system/roster').onSnapshot(function(snap){
+        var x=snap.exists?snap.data():null;
+        names=(x&&x.names)?clone(x.names):{};
+        softRender();
+      },onDbErr);
+    }
+    if(!unsubProgAll){
+      unsubProgAll=db.collection('progress').onSnapshot(function(snap){
+        var m={};
+        snap.docs.forEach(function(d){var x=d.data();m[d.id]=(x&&x.days)?clone(x.days):{}});
+        remote=m;
+        softRender();
+      },onDbErr);
+    }
+  }
+  if(ui.screen==='child'&&ui.key&&progOneKey!==ui.key){
+    if(unsubProgOne){unsubProgOne();unsubProgOne=null}
+    var key=ui.key;
+    progOneKey=key;ui.progReady=false;ui.progSlow=false;
+    unsubProgOne=db.doc('progress/'+key).onSnapshot(function(snap){
+      ui.progReady=true;
+      var x=snap.exists?snap.data():null;
+      if(!ui.progBusy)progress=(x&&x.days)?clone(x.days):{};
+      softRender();
+    },onDbErr);
+    setTimeout(function(){if(!ui.progReady&&progOneKey===key){ui.progSlow=true;softRender()}},10000);
+  }
+}
+function stopStaffSubs(){
+  if(unsubRoster){unsubRoster();unsubRoster=null}
+  if(unsubProgAll){unsubProgAll();unsubProgAll=null}
+}
+function dbMsg(e){
+  if(e&&e.code==='invalid_argument')return 'Permission denied by server.';
+  return 'Could not save to Vercel backend. Check your connection and try again.';
+}
+function vBanner(){
+  var m='';
+  if(dbState==='slow')m='Still connecting to the Vercel database. Check that Redis is linked to your project.';
+  else if(dbErr)m='Connection error ('+dbErr+'). Ensure /api/db is deployed and Redis is linked.';
+  return m?'<div class="banner alert" role="status">'+esc(m)+'</div>':'';
+}
+
+/* ---------- Date & count helpers ---------- */
+function parseISO(iso){var p=iso.split('-').map(Number);return Date.UTC(p[0],p[1]-1,p[2])}
+function fmt(iso){var dt=new Date(parseISO(iso));return {d:dt.getUTCDate(),m:MON[dt.getUTCMonth()],ml:MONL[dt.getUTCMonth()],w:WD[dt.getUTCDay()],wl:WDL[dt.getUTCDay()],y:dt.getUTCFullYear()}}
+function daysOf(st){
+  var out=[];
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(st.start)||!/^\d{4}-\d{2}-\d{2}$/.test(st.end))return out;
+  for(var t=parseISO(st.start),e=parseISO(st.end);t<=e&&out.length<120;t+=864e5){
+    var dt=new Date(t);
+    out.push({iso:dt.toISOString().slice(0,10),d:dt.getUTCDate(),m:MON[dt.getUTCMonth()],w:WD[dt.getUTCDay()]});
+  }
+  return out;
+}
+function todayISO(){var n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')}
+function dayDiff(a,b){return Math.round((parseISO(b)-parseISO(a))/864e5)}
+function gc(prog,iso,id){var v=prog&&prog[iso];if(!v)return 0;if(Array.isArray(v))return v.indexOf(id)>-1?1:0;return Math.max(0,+v[id]||0)}
+function isDone(prog,iso,a){var c=gc(prog,iso,a.id);return a.t>0?c>=a.t:c>0}
+function cnt(prog,iso,acts){return acts.filter(function(a){return isDone(prog,iso,a)}).length}
+function sumDay(prog,iso,acts){var t=0;acts.forEach(function(a){t+=gc(prog,iso,a.id)});return t}
+function state8(c,n){return n&&c===n?'done':(c>0?'part':'')}
+function rangeLine(st){var a=fmt(st.start),b=fmt(st.end);return a.d+' '+a.m+' to '+b.d+' '+b.m+' '+b.y}
+function pad2(n){return String(n).padStart(2,'0')}
+function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+
+function parentLink(){
+  if(S.parentUrl&&/^https?:\/\//i.test(S.parentUrl))return S.parentUrl;
+  try{return window.location.href.split('#')[0]}catch(e){return ''}
+}
+function remHref(){
+  var ds=daysOf(S);
+  if(!ds.length)return '#';
+  var tm=(ui.remTime||'20:00').split(':'),hh=+tm[0]||0,mm=+tm[1]||0;
+  var day=ds[0].iso.replace(/-/g,''),end=(hh*60+mm+15)%1440;
+  var a=day+'T'+pad2(hh)+pad2(mm)+'00',b=day+'T'+pad2(Math.floor(end/60))+pad2(end%60)+'00';
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE'+
+    '&text='+encodeURIComponent('Mark today’s Tabbudaat Amaal')+
+    '&details='+encodeURIComponent('Open '+parentLink()+' and add today’s counts.')+
+    '&dates='+a+'/'+b+'&recur='+encodeURIComponent('RRULE:FREQ=DAILY;COUNT='+ds.length);
+}
+
+/* =====================  PARENT PORTAL  ===================== */
+function vParentLogin(){
+  return '<div class="top"><div class="brand">Tabbudaat Amaal<small>Parent Portal</small></div>'+
+    '<button class="btn ghost sm" data-act="goto" data-v="staff">Teacher Dashboard &rarr;</button></div>'+
+    vBanner()+
+    '<h1>Enter your child’s ITS number</h1>'+
+    '<p class="lead">Each child’s file is private. Use the 8-digit ITS number to open only your child’s page.</p>'+
+    '<form class="card stack" data-form="login" autocomplete="off">'+
+      '<div><label class="f" for="its">ITS number</label>'+
+      '<input id="its" class="its" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="00000000" value="'+esc(ui.itsVal)+'"></div>'+
+      (ui.err?'<p class="err" role="alert">'+esc(ui.err)+'</p>':'')+
+      '<button class="btn" type="submit">Open my child’s page</button>'+
+    '</form>'+
+    '<p class="note" style="margin-top:16px">Recitation days: '+esc(rangeLine(S))+'</p>';
+}
+
+function vChild(){
+  var ds=daysOf(S),acts=S.activities,n=acts.length,t=todayISO();
+  var hit=findStudent(ui.key);
+  if(!hit){
+    return '<div class="top"><div class="brand">Tabbudaat Amaal<small>Parent Portal</small></div></div>'+
+      '<p class="note">This file is no longer on the class list.</p><button class="btn" data-act="switch">Back</button>';
+  }
+  if(!ds.length){
+    return '<div class="top"><div class="brand">Tabbudaat Amaal<small>Parent Portal</small></div></div>'+
+      '<p class="note">No valid recitation dates configured yet.</p>';
+  }
+  if(!ui.sel||!ds.some(function(d){return d.iso===ui.sel})){
+    ui.sel=t>=S.start&&t<=S.end?t:(t<S.start?S.start:S.end);
+  }
+  var ticks=0,full=0;
+  ds.forEach(function(d){var c=cnt(progress,d.iso,acts);ticks+=c;if(n&&c===n)full++});
+  var pct=ds.length&&n?Math.round(ticks/(ds.length*n)*100):0;
+  var status;
+  if(t<S.start){var k=dayDiff(t,S.start);status='Starts in '+k+(k===1?' day':' days')+' ('+fmt(S.start).d+' '+fmt(S.start).m+')'}
+  else if(t>S.end){status='The recitation period has ended'}
+  else{status='Day '+(dayDiff(S.start,t)+1)+' of '+ds.length}
+  var sel=ds.filter(function(d){return d.iso===ui.sel})[0];
+  var c=cnt(progress,sel.iso,acts),f=fmt(sel.iso);
+
+  var syncNote=ui.progReady?'Saved and shared with the teacher dashboard':(ui.progSlow?'Cannot reach your saved counts yet':'Loading your saved counts…');
+
+  var banners='';
+  if(ui.progReady){
+    var missed=ds.filter(function(d){return d.iso<t&&cnt(progress,d.iso,acts)===0});
+    var inRange=t>=S.start&&t<=S.end;
+    var todayNone=inRange&&n>0&&cnt(progress,t,acts)===0;
+    if(todayNone){
+      banners+='<div class="banner" role="status"><strong>You haven’t marked today yet.</strong>Enter what your child has read today.<div class="row"><button class="btn sm" data-act="day" data-d="'+t+'">Mark today</button></div></div>';
+    }
+    if(missed.length){
+      var shown=missed.slice(0,8).map(function(d){return '<button class="btn ghost sm" data-act="day" data-d="'+d.iso+'">'+d.d+' '+d.m+'</button>'}).join('');
+      banners+='<div class="banner alert" role="status"><strong>You missed marking '+missed.length+(missed.length===1?' day.':' days.')+'</strong>Nothing is marked for these dates. You can still add counts.<div class="row">'+shown+(missed.length>8?'<span class="note">and '+(missed.length-8)+' more</span>':'')+'</div></div>';
+    }
+  }
+
+  var chips=ds.map(function(d,i){
+    var cc=cnt(progress,d.iso,acts);
+    var cls='day '+state8(cc,n)+(d.iso===t?' today':'')+(d.iso>t?' future':'')+(ui.progReady&&d.iso<t&&cc===0?' miss':'');
+    var showM=i===0||d.d===1;
+    return '<button class="'+cls+'" data-act="day" data-d="'+d.iso+'" aria-current="'+(d.iso===ui.sel)+'" aria-label="'+d.w+' '+d.d+' '+d.m+', '+cc+' of '+n+' done">'+
+      '<span class="w">'+d.w+'</span><span class="n">'+d.d+'</span><span class="m">'+(showM?d.m:'')+'</span></button>';
+  }).join('');
+
+  var list=acts.map(function(a){
+    var v=gc(progress,sel.iso,a.id),fin=isDone(progress,sel.iso,a),id=esc(a.id);
+    return '<li><div class="fr'+(fin?' fin':'')+'">'+
+      '<input class="num" type="number" inputmode="numeric" min="0" max="99999" id="n-'+id+'" name="n-'+id+'" value="'+(v>0?v:'')+'" placeholder="0">'+
+      '<label for="n-'+id+'"><span class="ar" lang="ar" dir="rtl">'+esc(a.ar)+'</span>'+((a.tr||a.t)?'<span class="tr">'+esc(a.tr||'')+(a.t?(a.tr?' · ':'')+'target '+a.t:'')+'</span>':'')+'</label></div></li>';
+  }).join('');
+
+  var canSubmit=!!db&&ui.progReady&&!ui.progBusy;
+  var btnLabel=ui.progBusy?'Saving…':(ui.progReady?'Submit':'Loading…');
+
+  return '<div class="top"><div class="brand">Tabbudaat Amaal<small>'+esc(hit.c.name)+'</small></div>'+
+    '<div class="row"><button class="btn ghost sm" data-act="goto" data-v="staff">Teacher Dashboard</button>'+
+    '<button class="btn ghost sm" data-act="switch">Not you?</button></div></div>'+
+    vBanner()+
+    '<h1>'+esc(ui.name||'Your child')+'</h1>'+
+    '<div class="gap8" style="margin-bottom:20px"><div class="row between"><span class="note">'+esc(status)+'</span><span class="note">'+full+' of '+ds.length+' days complete</span></div>'+
+    '<div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'"><i style="width:'+pct+'%"></i></div>'+
+    '<span class="note" id="sync">'+esc(syncNote)+'</span></div>'+
+    banners+
+    '<div class="days" style="margin-bottom:20px">'+chips+'</div>'+
+    '<section class="card stack"><div class="row between"><div><h2>'+f.wl+', '+f.d+' '+f.ml+'</h2><span class="note">'+c+' of '+n+' done · '+sumDay(progress,sel.iso,acts)+' recited</span></div></div>'+
+    (n&&c===n?'<p class="done-msg">Day complete. Masha’Allah.</p>':'')+
+    '<p class="note">Enter how many times your child recited each one, then press Submit.</p>'+
+    '<form data-form="counts" autocomplete="off"><ul class="acts">'+list+'</ul>'+
+    '<div class="row" style="margin-top:16px"><button class="btn grow" type="submit"'+(canSubmit?'':' disabled')+'>'+btnLabel+'</button></div>'+
+    (ui.saved?'<p class="ok" role="status" style="margin-top:10px">'+esc(ui.saved)+'</p>':'')+
+    (ui.err?'<p class="err" role="alert" style="margin-top:10px">'+esc(ui.err)+'</p>':'')+'</form></section>'+
+    '<section class="card stack" style="margin-top:16px"><div><h3>Daily reminder</h3><p class="note">Get an evening alert so marking is not forgotten. Pick a time, then add it to Google Calendar.</p></div>'+
+    '<div class="row"><input id="remTime" type="time" value="'+esc(ui.remTime)+'" style="max-width:150px" aria-label="Reminder time">'+
+    '<a id="remLink" class="btn ghost" href="'+esc(remHref())+'" target="_blank" rel="noopener">Add to Google Calendar</a></div></section>';
+}
+
+function saveCounts(){
+  if(!db||!ui.progReady||ui.progBusy)return;
+  var iso=ui.sel,o={};
+  S.activities.forEach(function(a){
+    var el=document.getElementById('n-'+a.id);
+    var n=Math.max(0,Math.min(99999,Math.floor(+(el&&el.value)||0)));
+    if(n>0)o[a.id]=n;
+  });
+  var prev=progress,next=clone(progress);
+  if(Object.keys(o).length)next[iso]=o;else delete next[iso];
+  progress=next;ui.progBusy=true;ui.saved='';ui.err='';
+  render();
+  db.doc('progress/'+ui.key).set({days:next,updated:Date.now()}).then(function(){
+    ui.progBusy=false;
+    ui.saved='Saved! Your child’s progress has been updated.';
+    render();
+  },function(e){
+    progress=prev;
+    ui.progBusy=false;
+    ui.err=dbMsg(e);
+    render();
+  });
+}
+
+/* =====================  STAFF / TEACHER PORTAL  ===================== */
+function vStaffLogin(){
+  var isTeacher = ui.loginMode === 'teacher';
+  return '<div class="top"><div class="brand">Tabbudaat Amaal<small>Teacher & Admin Portal</small></div>'+
+    '<button class="btn ghost sm" data-act="goto" data-v="parent">&larr; Parent Portal</button></div>'+
+    vBanner()+
+    '<h1>Staff Sign In</h1>'+
+    '<div class="tabs" role="tablist">'+
+      '<button role="tab" aria-selected="'+isTeacher+'" data-act="lmode" data-m="teacher">Teacher (ITS)</button>'+
+      '<button role="tab" aria-selected="'+(!isTeacher)+'" data-act="lmode" data-m="admin">School Admin</button>'+
+    '</div>'+
+    (isTeacher
+      ? '<form class="card stack" data-form="staff-teacher" autocomplete="off">'+
+          '<div><label class="f" for="t-its">Teacher ITS number</label>'+
+          '<input id="t-its" class="its" inputmode="numeric" maxlength="12" placeholder="00000000" value="'+esc(ui.itsVal)+'"></div>'+
+          (ui.err?'<p class="err" role="alert">'+esc(ui.err)+'</p>':'')+
+          '<button class="btn" type="submit">Open Class Dashboard</button>'+
+        '</form>'
+      : '<form class="card stack" data-form="staff-admin" autocomplete="off">'+
+          '<div><label class="f" for="a-pin">Admin Passcode</label>'+
+          '<input id="a-pin" type="password" placeholder="Enter admin passcode" value="'+esc(ui.adminPassVal)+'"></div>'+
+          '<p class="note">Default passcode is <strong>1234</strong> until changed in Settings.</p>'+
+          (ui.err?'<p class="err" role="alert">'+esc(ui.err)+'</p>':'')+
+          '<button class="btn" type="submit">Sign In as Admin</button>'+
+        '</form>');
+}
+
+function vStaff(){
+  var isAdmin = ui.role === 'admin';
+  var clsList = visibleClasses(S);
+  if(!ui.classId && clsList.length) ui.classId = clsList[0].id;
+  var cls = curClass(S);
+
+  var tabBar = '<div class="tabs" role="tablist">'+
+    '<button role="tab" aria-selected="'+(ui.tab==='class')+'" data-act="tab" data-t="class">Progress</button>'+
+    (isAdmin ? '<button role="tab" aria-selected="'+(ui.tab==='roster')+'" data-act="tab" data-t="roster">Students</button>' : '')+
+    (isAdmin ? '<button role="tab" aria-selected="'+(ui.tab==='acts')+'" data-act="tab" data-t="acts">Recitations</button>' : '')+
+    (isAdmin ? '<button role="tab" aria-selected="'+(ui.tab==='settings')+'" data-act="tab" data-t="settings">Settings</button>' : '')+
+  '</div>';
+
+  var body = '';
+  if(ui.tab === 'class') body = vTabClass(cls, clsList);
+  else if(ui.tab === 'roster' && isAdmin) body = vTabRoster();
+  else if(ui.tab === 'acts' && isAdmin) body = vTabActs();
+  else if(ui.tab === 'settings' && isAdmin) body = vTabSettings();
+  else body = vTabClass(cls, clsList);
+
+  var saveBar = (isAdmin && ui.dirty)
+    ? '<div class="savebar"><span class="note"><strong>Unsaved changes</strong></span>'+
+      '<div class="row"><button class="btn ghost sm" data-act="discard">Discard</button>'+
+      '<button class="btn sm" data-act="publish"'+(ui.saving?' disabled':'')+'>'+(ui.saving?'Publishing…':'Publish Changes')+'</button></div></div>'
+    : '';
+
+  return '<div class="top"><div class="brand">Tabbudaat Amaal<small>'+(isAdmin?'Admin':'Teacher: '+esc(ui.teacherName))+'</small></div>'+
+    '<div class="row"><button class="btn ghost sm" data-act="goto" data-v="parent">Parent View</button>'+
+    '<button class="btn ghost sm" data-act="staff-out">Sign out</button></div></div>'+
+    vBanner()+
+    (ui.msg?'<div class="banner" role="status"><strong>'+esc(ui.msg)+'</strong></div>':'')+
+    (ui.err?'<div class="banner alert" role="alert"><strong>'+esc(ui.err)+'</strong></div>':'')+
+    tabBar + body + saveBar;
+}
+
+function vTabClass(cls, clsList){
+  if(!cls) return '<div class="card"><p class="note">No classes configured yet. Add a class in Students.</p></div>';
+  var ds = daysOf(S), acts = S.activities, n = acts.length, t = todayISO();
+
+  var chips = clsList.length > 1
+    ? '<div class="chips">'+clsList.map(function(c){
+        return '<button class="chip" aria-pressed="'+(c.id===cls.id)+'" data-act="cls" data-c="'+esc(c.id)+'">'+esc(c.name)+'</button>';
+      }).join('')+'</div>'
+    : '';
+
+  var rows = cls.students.map(function(s){
+    var p = remote[s.h] || {};
+    var full = 0, totalRecited = 0;
+    ds.forEach(function(d){
+      var c = cnt(p, d.iso, acts);
+      if(n && c === n) full++;
+      totalRecited += sumDay(p, d.iso, acts);
+    });
+    var todayCnt = (t >= S.start && t <= S.end) ? cnt(p, t, acts) : null;
+    var squares = ds.map(function(d){
+      var c = cnt(p, d.iso, acts);
+      return '<i class="'+state8(c, n)+'" title="'+d.d+' '+d.m+': '+c+'/'+n+'"></i>';
+    }).join('');
+
+    return '<div class="card">'+
+      '<div class="row between"><strong>'+esc(nameOf(s.h))+'</strong>'+
+      '<span class="badge'+(full===ds.length&&ds.length?' good':'')+'">'+full+'/'+ds.length+' days</span></div>'+
+      '<p class="note" style="margin-top:4px">Total recited: '+totalRecited+
+      (todayCnt!==null ? ' · Today: '+todayCnt+'/'+n : '')+'</p>'+
+      '<div class="mini">'+squares+'</div></div>';
+  }).join('');
+
+  return chips +
+    '<div class="row between" style="margin-bottom:12px"><h2>'+esc(cls.name)+' ('+cls.students.length+')</h2>'+
+    '<button class="btn ghost sm" data-act="csv">Export CSV</button></div>'+
+    '<div class="stack">'+(rows || '<p class="note">No students in this class yet.</p>')+'</div>';
+}
+
+function vTabRoster(){
+  var cls = curClass(draft) || draft.classes[0];
+  var chips = '<div class="chips">'+draft.classes.map(function(c){
+    return '<button class="chip" aria-pressed="'+(cls&&c.id===cls.id)+'" data-act="cls" data-c="'+esc(c.id)+'">'+esc(c.name)+'</button>';
+  }).join('')+'</div>';
+
+  var list = cls ? cls.students.map(function(s, idx){
+    return '<div class="row between card" style="padding:10px 14px">'+
+      '<span>'+esc(nameOf(s.h))+' <small class="note">('+s.h.slice(0,6)+'…)</small></span>'+
+      '<button class="btn danger sm" data-act="del-stu" data-i="'+idx+'">Remove</button></div>';
+  }).join('') : '';
+
+  return '<div class="stack">'+
+    '<div class="card stack"><h3>Add New Class</h3>'+
+      '<div class="row"><input id="new-cls" placeholder="e.g. Grade 6" value="'+esc(ui.newClassName)+'" class="grow">'+
+      '<button class="btn sm" data-act="add-cls">Add Class</button></div></div>'+
+    (cls ? '<div class="card stack"><h3>Bulk Add Students to '+esc(cls.name)+'</h3>'+
+      '<p class="note">Paste one student per line: <code>ITS_NUMBER, Full Name</code></p>'+
+      '<textarea id="bulk-stu" placeholder="30412345, Fatema Ali&#10;30498765, Husain Abbas">'+esc(ui.draftText)+'</textarea>'+
+      '<button class="btn sm" data-act="import-stu">Add Students to Draft</button></div>'+
+      chips + '<div class="stack">'+list+'</div>' : '')+
+  '</div>';
+}
+
+function vTabActs(){
+  var items = draft.activities.map(function(a, idx){
+    return '<div class="edit">'+
+      '<div class="row between"><span class="note">Item #'+(idx+1)+'</span>'+
+      '<button class="btn danger sm" data-act="del-act" data-i="'+idx+'">Delete</button></div>'+
+      '<input class="ar" lang="ar" dir="rtl" data-act-field="ar" data-i="'+idx+'" value="'+esc(a.ar)+'" placeholder="Arabic text">'+
+      '<div class="row"><input class="grow" data-act-field="tr" data-i="'+idx+'" value="'+esc(a.tr||'')+'" placeholder="English transliteration">'+
+      '<input style="width:110px" type="number" min="0" data-act-field="t" data-i="'+idx+'" value="'+(a.t||'')+'" placeholder="Target (0)"></div>'+
+    '</div>';
+  }).join('');
+
+  return '<div class="stack">'+
+    '<div class="row between"><h2>Recitations ('+draft.activities.length+')</h2>'+
+    '<button class="btn sm" data-act="add-act">+ Add Recitation</button></div>'+
+    items +
+  '</div>';
+}
+
+function vTabSettings(){
+  var tList = (draft.teachers||[]).map(function(t, idx){
+    return '<div class="row between card" style="padding:10px 14px">'+
+      '<span>'+esc(t.name)+'</span>'+
+      '<button class="btn danger sm" data-act="del-tch" data-i="'+idx+'">Remove</button></div>';
+  }).join('');
+
+  return '<div class="stack">'+
+    '<div class="card stack"><h3>Recitation Schedule</h3>'+
+      '<div class="row"><div class="grow"><label class="f">Start Date</label><input type="date" data-cfg="start" value="'+esc(draft.start)+'"></div>'+
+      '<div class="grow"><label class="f">End Date</label><input type="date" data-cfg="end" value="'+esc(draft.end)+'"></div></div>'+
+      '<div><label class="f">Parent Portal URL (for Calendar Reminders)</label>'+
+      '<input type="url" data-cfg="parentUrl" placeholder="https://your-app.vercel.app" value="'+esc(draft.parentUrl||'')+'"></div>'+
+    '</div>'+
+    '<div class="card stack"><h3>Teachers (ITS Access)</h3>'+
+      '<div class="row"><input style="width:140px" inputmode="numeric" id="t-add-its" placeholder="Teacher ITS" value="'+esc(ui.newTeacherIts)+'">'+
+      '<input class="grow" id="t-add-name" placeholder="Teacher Name" value="'+esc(ui.newTeacherName)+'">'+
+      '<button class="btn sm" data-act="add-tch">Add</button></div>'+
+      tList +
+    '</div>'+
+    '<div class="card stack"><h3>Change Admin Passcode</h3>'+
+      '<div class="row"><input type="password" id="new-pin" placeholder="New passcode (min 4 chars)" value="'+esc(ui.newPin)+'" class="grow">'+
+      '<button class="btn sm" data-act="set-pin">Update Passcode</button></div>'+
+    '</div>'+
+  '</div>';
+}
+
+function exportCsv(){
+  var cls = curClass(S);
+  if(!cls) return;
+  var ds = daysOf(S), acts = S.activities;
+  var header = ['Student Name'].concat(ds.map(function(d){return d.iso})).concat(['Total Recited']);
+  var lines = [header.join(',')];
+  cls.students.forEach(function(s){
+    var p = remote[s.h] || {}, tot = 0;
+    var row = ['"'+nameOf(s.h).replace(/"/g,'""')+'"'];
+    ds.forEach(function(d){
+      var sum = sumDay(p, d.iso, acts);
+      tot += sum;
+      row.push(sum);
+    });
+    row.push(tot);
+    lines.push(row.join(','));
+  });
+  var blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = cls.name.replace(/\s+/g,'_') + '_Tabbudaat.csv';
+  a.click();
+}
+
+function publishDraft(){
+  if(!db || ui.saving) return;
+  ui.saving = true; ui.err = ''; ui.msg = '';
+  render();
+  var mergedNames = Object.assign({}, names, newNames);
+  Promise.all([
+    db.doc('system/config').set(draft),
+    db.doc('system/roster').set({names: mergedNames})
+  ]).then(function(){
+    S = clone(draft);
+    names = mergedNames;
+    newNames = {};
+    ui.dirty = false;
+    ui.saving = false;
+    ui.msg = 'Published! All parents and teachers now see the updated setup.';
+    render();
+  }, function(e){
+    ui.saving = false;
+    ui.err = dbMsg(e);
+    render();
+  });
+}
+
+/* =====================  MAIN RENDER & EVENTS  ===================== */
+function render(){
+  if(ui.view === 'staff'){
+    app.innerHTML = ui.role ? vStaff() : vStaffLogin();
+  } else {
+    app.innerHTML = (ui.screen === 'child' && ui.key) ? vChild() : vParentLogin();
+  }
+}
+
+app.addEventListener('submit', function(e){
+  e.preventDefault();
+  var f = e.target.getAttribute('data-form');
+
+  if(f === 'login'){
+    var raw = cleanIts(document.getElementById('its').value);
+    ui.itsVal = raw; ui.err = '';
+    if(raw.length < 6){ ui.err = 'Please enter a valid 8-digit ITS number.'; render(); return; }
+    var d = derive(raw), k = idOf(d), hit = findStudent(k);
+    if(!hit){ ui.err = 'ITS number not found on the class list. Check with the school teacher.'; render(); return; }
+    var nm = unseal(d, hit.s.e) || 'Student';
+    ui.key = k; ui.name = nm; ui.screen = 'child'; ui.saved = '';
+    lset(LS_KEY, k); lset(LS_NAME, nm);
+    ensureSubs();
+    render();
+  }
+
+  if(f === 'counts'){
+    saveCounts();
+  }
+
+  if(f === 'staff-teacher'){
+    var rawT = cleanIts(document.getElementById('t-its').value);
+    ui.itsVal = rawT; ui.err = '';
+    var kT = idOf(derive(rawT)), tHit = findTeacher(kT);
+    if(!tHit){ ui.err = 'Teacher ITS not recognized.'; render(); return; }
+    ui.role = 'teacher'; ui.teacherName = tHit.name; ui.teacherClassIds = tHit.classIds || [];
+    try{ sessionStorage.setItem(SESSION_KEY, JSON.stringify({role:'teacher', name:tHit.name, classIds:ui.teacherClassIds})); }catch(x){}
+    ensureSubs();
+    render();
+  }
+
+  if(f === 'staff-admin'){
+    var p = document.getElementById('a-pin').value;
+    ui.adminPassVal = p; ui.err = '';
+    if(pinHash(p) !== (S.adminPinH || DEFAULT_PIN_H)){
+      ui.err = 'Incorrect admin passcode.'; render(); return;
+    }
+    ui.role = 'admin'; ui.adminPassVal = '';
+    try{ sessionStorage.setItem(SESSION_KEY, JSON.stringify({role:'admin'})); }catch(x){}
+    ensureSubs();
+    render();
+  }
+});
+
+app.addEventListener('click', function(e){
+  var btn = e.target.closest('[data-act]');
+  if(!btn) return;
+  var act = btn.getAttribute('data-act');
+  ui.err = ''; ui.msg = '';
+
+  if(act === 'goto'){
+    ui.view = btn.getAttribute('data-v');
+    try{ location.hash = ui.view === 'staff' ? 'teacher' : ''; }catch(x){}
+    ensureSubs(); render();
+  }
+  else if(act === 'switch'){
+    ui.screen = 'login'; ui.key = ''; ui.name = ''; ui.itsVal = ''; ui.saved = '';
+    progOneKey = '';
+    if(unsubProgOne){ unsubProgOne(); unsubProgOne = null; }
+    ldel(LS_KEY); ldel(LS_NAME);
+    render();
+  }
+  else if(act === 'day'){
+    ui.sel = btn.getAttribute('data-d'); ui.saved = '';
+    render();
+  }
+  else if(act === 'lmode'){
+    ui.loginMode = btn.getAttribute('data-m');
+    render();
+  }
+  else if(act === 'staff-out'){
+    ui.role = null; ui.dirty = false; draft = clone(S);
+    try{ sessionStorage.removeItem(SESSION_KEY); }catch(x){}
+    stopStaffSubs();
+    render();
+  }
+  else if(act === 'tab'){
+    ui.tab = btn.getAttribute('data-t');
+    render();
+  }
+  else if(act === 'cls'){
+    ui.classId = btn.getAttribute('data-c');
+    render();
+  }
+  else if(act === 'csv'){
+    exportCsv();
+  }
+  else if(act === 'add-cls'){
+    var nm = (document.getElementById('new-cls').value || '').trim();
+    if(!nm) return;
+    var cid = uid('c');
+    draft.classes.push({id: cid, name: nm, students: []});
+    ui.classId = cid; ui.newClassName = ''; ui.dirty = true;
+    render();
+  }
+  else if(act === 'import-stu'){
+    var cls = curClass(draft) || draft.classes[0];
+    var raw = document.getElementById('bulk-stu').value || '';
+    if(!cls || !raw.trim()) return;
+    var added = 0;
+    raw.split(/\r?\n/).forEach(function(line){
+      var parts = line.split(/[,|\t]+/);
+      if(parts.length < 2) return;
+      var its = cleanIts(parts[0]), sname = parts.slice(1).join(' ').trim();
+      if(its.length < 6 || !sname) return;
+      var d = derive(its), h = idOf(d), encName = seal(d, sname);
+      newNames[h] = sname;
+      var exists = cls.students.some(function(st){ return st.h === h; });
+      if(!exists){ cls.students.push({h: h, e: encName}); added++; }
+    });
+    ui.draftText = ''; ui.dirty = true;
+    ui.msg = 'Added ' + added + ' student(s) to draft. Click Publish Changes to save.';
+    render();
+  }
+  else if(act === 'del-stu'){
+    var clsD = curClass(draft) || draft.classes[0];
+    var idx = +btn.getAttribute('data-i');
+    if(clsD){ clsD.students.splice(idx, 1); ui.dirty = true; render(); }
+  }
+  else if(act === 'add-act'){
+    draft.activities.push({id: uid('a'), ar: '', tr: '', t: 0});
+    ui.dirty = true; render();
+  }
+  else if(act === 'del-act'){
+    var aIdx = +btn.getAttribute('data-i');
+    draft.activities.splice(aIdx, 1);
+    ui.dirty = true; render();
+  }
+  else if(act === 'add-tch'){
+    var tIts = cleanIts(document.getElementById('t-add-its').value);
+    var tNm = (document.getElementById('t-add-name').value || '').trim();
+    if(tIts.length < 6 || !tNm){ ui.err = 'Enter both Teacher ITS and Name.'; render(); return; }
+    draft.teachers.push({h: idOf(derive(tIts)), name: tNm, classIds: []});
+    ui.newTeacherIts = ''; ui.newTeacherName = ''; ui.dirty = true;
+    render();
+  }
+  else if(act === 'del-tch'){
+    draft.teachers.splice(+btn.getAttribute('data-i'), 1);
+    ui.dirty = true; render();
+  }
+  else if(act === 'set-pin'){
+    var np = (document.getElementById('new-pin').value || '').trim();
+    if(np.length < 4){ ui.err = 'Passcode must be at least 4 characters.'; render(); return; }
+    draft.adminPinH = pinHash(np);
+    ui.newPin = ''; ui.dirty = true;
+    ui.msg = 'Passcode updated in draft. Click Publish Changes to apply.';
+    render();
+  }
+  else if(act === 'discard'){
+    draft = clone(S); newNames = {}; ui.dirty = false;
+    render();
+  }
+  else if(act === 'publish'){
+    publishDraft();
+  }
+});
+
+app.addEventListener('input', function(e){
+  var el = e.target;
+  if(el.id === 'remTime'){
+    ui.remTime = el.value;
+    var lk = document.getElementById('remLink');
+    if(lk) lk.href = remHref();
+  }
+  else if(el.hasAttribute('data-act-field')){
+    var idx = +el.getAttribute('data-i'), fld = el.getAttribute('data-act-field');
+    if(draft.activities[idx]){
+      draft.activities[idx][fld] = fld === 't' ? Math.max(0, Math.floor(+el.value || 0)) : el.value;
+      ui.dirty = true;
+    }
+  }
+  else if(el.hasAttribute('data-cfg')){
+    draft[el.getAttribute('data-cfg')] = el.value;
+    ui.dirty = true;
+  }
+});
+
+/* Boot: restore saved parent/staff sessions */
+(function boot(){
+  var savedKey = lget(LS_KEY), savedName = lget(LS_NAME);
+  if(savedKey){ ui.key = savedKey; ui.name = savedName || 'Student'; ui.screen = 'child'; }
+  try{
+    var ss = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
+    if(ss && ss.role){ ui.role = ss.role; ui.teacherName = ss.name || ''; ui.teacherClassIds = ss.classIds || []; }
+  }catch(x){}
+  connectDb();
+  render();
+})();
+
+})();
+</script>
+</body>
+</html>
