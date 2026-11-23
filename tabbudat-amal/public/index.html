@@ -864,7 +864,10 @@ app.addEventListener('submit', function(e){
   if(f === 'staff-admin'){
     var p = document.getElementById('a-pin').value;
     ui.adminPassVal = p; ui.err = '';
-    if(pinHash(p) !== (S.adminPinH || DEFAULT_PIN_H)){
+   var valid = (S.adminPinH && S.adminPinH !== DEFAULT_PIN_H)
+      ? (pinHash(p) === S.adminPinH)
+      : (p === '1234');
+    if(!valid){
       ui.err = 'Incorrect admin passcode.'; render(); return;
     }
     ui.role = 'admin'; ui.adminPassVal = '';
